@@ -3,120 +3,1162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão - Almoxarifado</title>
+    <title>RH CENTRAL - Futuristic Enterprise Intelligence System</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #f4f6f9; display: flex; height: 100vh; }
-        
-        /* Menu Lateral */
-        aside { width: 250px; background-color: #343a40; color: white; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; background-color: #212529; font-size: 18px; font-weight: bold; text-align: center; }
-        .sidebar-menu { list-style: none; padding: 20px 0; }
-        .sidebar-menu li { padding: 12px 20px; cursor: pointer; transition: 0.2s; }
-        .sidebar-menu li:hover, .sidebar-menu li.active { background-color: #007bff; }
+        :root {
+            --bg-main: #040812;
+            --bg-secondary: #081020;
+            --card-bg: rgba(15, 25, 44, 0.85);
+            --surface-elevated: #132238;
+            --tech-blue: #00BFFF;
+            --tech-cyan: #00E5FF;
+            --text-main: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --positive-green: #36D399;
+            --warning-yellow: #FBBF24;
+            --danger-red: #EF4444;
+            --border-color: rgba(0, 229, 255, 0.2);
+        }
 
-        /* Conteúdo Principal */
-        main { flex: 1; display: flex; flex-direction: column; }
-        header { background: white; padding: 15px 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .content { padding: 25px; overflow-y: auto; flex: 1; }
-        
-        /* Cards e Tabelas */
-        .card { background: white; padding: 20px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h3 { margin-bottom: 15px; color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        table th, table td { padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; font-size: 14px; }
-        table th { background-color: #f8f9fa; color: #495057; }
-        
-        .select-loja { padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* MENU LATERAL ESTILO DIAGRAMA HOLOGRÁFICO */
+        aside { 
+            width: 290px; 
+            background: linear-gradient(180deg, #070E1B 0%, #03060C 100%);
+            border-right: 1px solid var(--border-color); 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0; 
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-brand { padding: 22px 15px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .sidebar-brand h1 { font-size: 19px; font-weight: 900; color: #FFF; letter-spacing: 0.5px; }
+        .sidebar-brand span { font-size: 9px; color: var(--tech-cyan); text-transform: uppercase; letter-spacing: 2px; display: block; margin-top: 3px; }
+
+        .sidebar-menu { 
+            list-style: none; 
+            padding: 20px 0 20px 15px; 
+            overflow-y: auto; 
+            flex: 1; 
+            position: relative;
+        }
+        .sidebar-menu::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            bottom: 25px;
+            left: 27px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--tech-cyan), rgba(0, 191, 255, 0.2));
+            box-shadow: 0 0 10px var(--tech-cyan);
+        }
+
+        .sidebar-menu li { 
+            padding: 12px 16px 12px 32px; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+            font-size: 13px; 
+            color: var(--text-secondary);
+            border-radius: 10px 0 0 10px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .sidebar-menu li::after {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--bg-main);
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-menu li:hover { color: var(--text-main); background: rgba(0, 191, 255, 0.05); }
+        .sidebar-menu li:hover::after { border-color: var(--tech-blue); box-shadow: 0 0 8px var(--tech-blue); }
+
+        .sidebar-menu li.active { 
+            background: linear-gradient(90deg, rgba(0, 191, 255, 0.3) 0%, rgba(0, 229, 255, 0.05) 100%); 
+            color: var(--tech-cyan); 
+            border-left: 3px solid var(--tech-cyan);
+            font-weight: 700;
+            box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.15);
+        }
+        .sidebar-menu li.active::after {
+            background: var(--tech-cyan);
+            border-color: var(--tech-cyan);
+            box-shadow: 0 0 12px var(--tech-cyan), 0 0 25px var(--tech-cyan);
+        }
+
+        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255, 255, 255, 0.05); background: rgba(4, 8, 18, 0.9); }
+        .status-badge { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; }
+        .status-dot { width: 8px; height: 8px; background: var(--positive-green); border-radius: 50%; box-shadow: 0 0 12px var(--positive-green); }
+        .user-card-mini { background: var(--surface-elevated); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+
+        /* HEADER E LAYOUT */
+        main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: var(--bg-main); width: 100%; position: relative; }
+        header { 
+            background: var(--bg-secondary); 
+            padding: 12px 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .header-title h2 { font-size: 16px; font-weight: 800; color: #FFF; }
+        .header-title p { font-size: 11px; color: var(--text-secondary); display: none; }
+        .search-box { background: var(--surface-elevated); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; width: 200px; }
+        .search-box input { background: none; border: none; outline: none; color: #FFF; font-size: 12px; width: 100%; }
+
+        .content { padding: 15px; overflow-y: auto; flex: 1; }
+
+        /* KPIS COM BRILHO NÉON INTENSO EXATO DA FOTO */
+        .kpi-grid-futuristic { display: grid; grid-template-columns: repeat(1, 1fr); gap: 12px; margin-bottom: 15px; }
+        .kpi-futuristic { padding: 18px; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(12px); }
+
+        .kpi-blue { background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); box-shadow: 0 8px 30px rgba(2, 132, 199, 0.4); }
+        .kpi-cyan { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); box-shadow: 0 8px 30px rgba(14, 165, 233, 0.4); }
+        .kpi-amber { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); box-shadow: 0 8px 30px rgba(217, 119, 6, 0.4); }
+        .kpi-purple { background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4); }
+        .kpi-red { background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%); box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4); }
+
+        .kpi-val { font-size: 24px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); }
+        .kpi-lbl { font-size: 11px; color: rgba(255, 255, 255, 0.9); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+
+        /* CARDS MODULARES E TABELAS */
+        .card-modular { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 15px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .card-headline { color: var(--tech-cyan); font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; text-shadow: 0 0 8px rgba(0,229,255,0.3); }
+
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 480px; }
+        table th, table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-main); }
+        table th { background-color: var(--surface-elevated); color: var(--text-secondary); font-weight: 700; text-transform: uppercase; font-size: 10px; }
+
+        .select-loja { padding: 7px 10px; border-radius: 6px; border: 1px solid var(--tech-cyan); font-size: 12px; background: var(--surface-elevated); color: #FFF; outline: none; max-width: 150px; box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+        .secao-conteudo { display: none; }
+        .secao-conteudo.ativa { display: block !important; animation: fadeInSecao 0.3s ease-out; }
+
+        @keyframes fadeInSecao {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge-loja { background: rgba(0, 191, 255, 0.2); color: var(--tech-cyan); border: 1px solid rgba(0, 191, 255, 0.4); padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; display: inline-block; box-shadow: 0 0 10px rgba(0,191,255,0.2); }
+
+        .badge-alto, .badge-aceite { background-color: rgba(54, 211, 153, 0.15); color: var(--positive-green); border: 1px solid rgba(54, 211, 153, 0.4); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+        .badge-medio, .badge-pendente { background-color: rgba(251, 191, 36, 0.15); color: var(--warning-yellow); border: 1px solid rgba(251, 191, 36, 0.4); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+        .badge-baixo { background-color: rgba(239, 68, 68, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 68, 68, 0.4); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+
+        .btn { background: linear-gradient(135deg, var(--tech-blue), #0077b6); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; width: 100%; box-shadow: 0 4px 15px rgba(0,191,255,0.3); }
+        .btn-acao { background: var(--surface-elevated); color: var(--tech-cyan); border: 1px solid rgba(0, 229, 255, 0.4); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; margin-right: 5px; }
+        .btn-perigo { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); border: 1px solid rgba(239, 68, 68, 0.4); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
+
+        .form-group { margin-bottom: 10px; width: 100%; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+        .form-group input, .form-group select { width: 100%; padding: 8px 10px; background: var(--surface-elevated); border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; color: var(--text-main); outline: none; }
+        .form-inline { display: flex; flex-direction: column; gap: 10px; background: var(--bg-secondary); padding: 14px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border-color); }
+
+        .btn-menu-mobile { display: block; background: none; border: none; color: #FFF; font-size: 22px; cursor: pointer; padding: 2px 6px; margin-right: 10px; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; }
+
+        @media (min-width: 768px) {
+            .btn-menu-mobile { display: none !important; }
+            .search-box { width: 280px; }
+            .header-title p { display: block; }
+            .header-title h2 { font-size: 18px; }
+            .content { padding: 22px; }
+            .kpi-grid-futuristic { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+            .form-inline { flex-direction: row; align-items: flex-end; }
+            .btn { width: auto; }
+        }
+        @media (min-width: 1200px) { .kpi-grid-futuristic { grid-template-columns: repeat(5, 1fr); } }
+        @media (max-width: 767px) {
+            aside { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
+            aside.mobile-aberto { transform: translateX(0); }
+            .sidebar-overlay.ativo { display: block; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Menu Lateral -->
-    <aside>
-        <div class="sidebar-header">Almoxarifado Rede</div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenuMobile()"></div>
+
+    <aside id="asideMenu">
+        <div class="sidebar-brand">
+            <h1>RH CENTRAL</h1>
+            <span>Intelligence System</span>
+        </div>
         <ul class="sidebar-menu">
-            <li class="active">Painel Geral</li>
-            <li>Gestão de Lojas (26)</li>
-            <li>Produtos e Estoque</li>
-            <li>Movimentações</li>
-            <li>Sair</li>
+            <li class="active" onclick="mudarSecao('painelGeral', this)">Painel Geral <span>›</span></li>
+            <li id="menuGestaoLojas" onclick="mudarSecao('gestaoLojas', this)">Gestão de Lojas (26) <span>›</span></li>
+            <li id="menuProdutos" onclick="mudarSecao('produtosCadastro', this)">Cadastro de Produtos <span>›</span></li>
+            <li id="menuUsuarios" onclick="mudarSecao('gestaoUsuarios', this)">Gestão de Utilizadores <span>›</span></li>
+            <li onclick="mudarSecao('estoqueLoja', this)">Estoque por Loja <span>›</span></li>
+            <li onclick="mudarSecao('funcionarios', this)">Funcionários & Cautelas <span>›</span></li>
+            <li onclick="mudarSecao('movimentacoes', this)">Movimentações <span>›</span></li>
+            <li onclick="mudarSecao('relatoriosRH', this)">Relatórios & Indicadores <span>›</span></li>
         </ul>
+        <div class="sidebar-footer">
+            <div class="status-badge">
+                <div class="status-dot"></div> Sistema Online
+            </div>
+            <div class="user-card-mini">
+                <span id="sidebarUserName" style="font-size: 12px; font-weight: 700; color: #FFF;">Isac da Silva</span>
+                <span onclick="sairDoSistema()" style="cursor: pointer; color: var(--danger-red); font-size: 11px; font-weight: bold;">Sair</span>
+            </div>
+        </div>
     </aside>
 
-    <!-- Área Principal -->
     <main>
         <header>
-            <h2>Painel de Controlo Administrativo</h2>
-            <div>
-                <label for="lojaSelect" style="font-size: 14px; margin-right: 8px;">Loja Atual:</label>
-                <select id="lojaSelect" class="select-loja">
-                    <option value="">Carregando lojas...</option>
-                </select>
+            <div style="display: flex; align-items: center;">
+                <button class="btn-menu-mobile" onclick="toggleMenuMobile()">☰</button>
+                <div class="header-title">
+                    <h2 id="tituloTopo">Painel Geral</h2>
+                    <p>Visão consolidada da sua operação</p>
+                </div>
+            </div>
+            <div class="header-right" style="display: flex; align-items: center; gap: 12px;">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Buscar loja, produto...">
+                </div>
+                <div>
+                    <select id="lojaSelect" class="select-loja" onchange="atualizarLojaSelecionada(this)">
+                        <option value="">Todas as Lojas (Rede)</option>
+                    </select>
+                </div>
             </div>
         </header>
 
         <div class="content">
-            <div class="card">
-                <h3>Resumo Operacional da Rede</h3>
-                <p>Selecione uma loja no canto superior direito para filtrar os dados de stock, setores e colaboradores diretamente da base de dados em nuvem.</p>
+            <!-- SEÇÃO 1: PAINEL GERAL -->
+            <div id="painelGeral" class="secao-conteudo ativa">
+                <div class="card-modular" style="background: linear-gradient(135deg, #0d1728 0%, #112240 100%); border: 1px solid rgba(0,191,255,0.4);">
+                    <h3 style="color: #FFF; font-size: 15px; margin-bottom: 4px;">Bem-vindo ao RH CENTRAL!</h3>
+                    <p id="textoBoasVindas" style="color: var(--text-secondary); font-size: 12px;">Tecnologia e gestão a serviço de um RH mais eficiente.</p>
+                    <div id="infoLojaAtiva" class="badge-loja" style="margin-top: 10px;">A carregar perfil de acesso...</div>
+                </div>
+
+                <div class="kpi-grid-futuristic">
+                    <div class="kpi-futuristic kpi-blue">
+                        <div>
+                            <div class="kpi-val">26</div>
+                            <div class="kpi-lbl">Lojas Ativas</div>
+                        </div>
+                        <span style="font-size: 24px;">🏪</span>
+                    </div>
+                    <div class="kpi-futuristic kpi-cyan">
+                        <div>
+                            <div class="kpi-val" id="kpiTotalItensRede">0</div>
+                            <div class="kpi-lbl">Total Itens Stock</div>
+                        </div>
+                        <span style="font-size: 24px;">👥</span>
+                    </div>
+                    <div class="kpi-futuristic kpi-amber">
+                        <div>
+                            <div class="kpi-val" id="kpiPendentes">0</div>
+                            <div class="kpi-lbl">Trans. Pendentes</div>
+                        </div>
+                        <span style="font-size: 24px;">🔄</span>
+                    </div>
+                    <div class="kpi-futuristic kpi-purple">
+                        <div>
+                            <div class="kpi-val" id="kpiCautelas">0</div>
+                            <div class="kpi-lbl">Cautelas Ativas</div>
+                        </div>
+                        <span style="font-size: 24px;">🛡️</span>
+                    </div>
+                    <div class="kpi-futuristic kpi-red">
+                        <div>
+                            <div class="kpi-val" id="kpiAlertasEstoque">3</div>
+                            <div class="kpi-lbl">Alertas de Estoque</div>
+                        </div>
+                        <span style="font-size: 24px;">⚠️</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Lista de Lojas Oficiais</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nome da Loja</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaLojasBody">
-                        <tr>
-                            <td colspan="2">A carregar dados do banco...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- SEÇÃO 2: GESTÃO DE LOJAS -->
+            <div id="gestaoLojas" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Registar Nova Unidade</div>
+                    <div class="form-inline">
+                        <div class="form-group"><label>Código</label><input type="text" id="novaLojaCodigo" placeholder="Ex: L32"></div>
+                        <div class="form-group"><label>Nome da Unidade</label><input type="text" id="novaLojaNome" placeholder="Ex: CENTRO RJ"></div>
+                        <div class="form-group"><button class="btn" onclick="adicionarLoja()">Adicionar Loja</button></div>
+                    </div>
+                </div>
+                <div class="card-modular">
+                    <div class="card-headline">Diretório Oficial de Lojas (26)</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Código</th><th>Nome da Unidade</th><th>Credencial de Acesso</th></tr></thead>
+                            <tbody id="tabelaLojasBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </main>
+            <!-- SEÇÃO 3: CADASTRO DE PRODUTOS -->
+            <div id="produtosCadastro" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Registar Produto no Catálogo Master</div>
+                    <div class="form-inline">
+                        <div class="form-group"><label>Código / EAN</label><input type="text" id="novoProdCodigo" placeholder="Ex: PROD-CAM-X"></div>
+                        <div class="form-group"><label>Descrição do Item</label><input type="text" id="novoProdDesc" placeholder="Ex: Camisa Polo XG"></div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="novoProdCat"><option value="UNIFORME">Uniforme</option><option value="INSUMO">Insumo</option></select>
+                        </div>
+                        <div class="form-group"><button class="btn" onclick="adicionarProduto()">Cadastrar Produto</button></div>
+                    </div>
+                </div>
+                <div class="card-modular">
+                    <div class="card-headline">Catálogo Corporativo de Itens</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Código</th><th>Descrição</th><th>Categoria</th></tr></thead>
+                            <tbody id="tabelaProdutosBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            <!-- SEÇÃO 4: GESTÃO DE UTILIZADORES E PERMISSÕES -->
+            <div id="gestaoUsuarios" class="secao-conteudo">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn-acao" id="abaBtnUsers" onclick="alternarAbaUsuario('users')" style="background: var(--tech-blue); color: white;">Utilizadores</button>
+                    <button class="btn-acao" id="abaBtnGrupos" onclick="alternarAbaUsuario('grupos')">Grupos de Permissão</button>
+                </div>
+
+                <div id="subSecaoUsers">
+                    <div class="card-modular">
+                        <div class="card-headline">Criar Novo Utilizador</div>
+                        <div class="form-inline">
+                            <div class="form-group"><label>Login / Utilizador</label><input type="text" id="novoUserLogin" placeholder="Ex: joao.silva"></div>
+                            <div class="form-group"><label>Senha Inicial</label><input type="password" id="novoUserSenha" placeholder="••••••••"></div>
+                            <div class="form-group">
+                                <label>Vincular Loja</label>
+                                <select id="novoUserLoja" class="select-loja" style="max-width:100%">
+                                    <option value="SEM LOJA">SEM LOJA (Acesso Global / Escritório)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Grupo de Permissões</label>
+                                <select id="novoUserGrupo" class="select-loja" style="max-width:100%"></select>
+                            </div>
+                            <div class="form-group"><button class="btn" onclick="criarUtilizador()">Registar Utilizador</button></div>
+                        </div>
+                    </div>
+
+                    <div class="card-modular">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                            <div class="card-headline" style="margin: 0;">Lista de Utilizadores</div>
+                            <div style="width: 220px;">
+                                <input type="text" id="inputPesquisaUser" placeholder="Pesquisar..." oninput="filtrarUtilizadores()" style="padding: 6px 10px; background: var(--surface-elevated); border: 1px solid var(--border-color); border-radius: 6px; color: #FFF; font-size: 12px; width: 100%;">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                               <thead><tr><th>Utilizador</th><th>Loja Vinculada</th><th>Grupo</th><th>Ações</th></tr></thead>
+                               <tbody id="tabelaUsuariosBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subSecaoGrupos" style="display: none;">
+                    <div class="card-modular">
+                        <div class="card-headline">Criar Grupo de Permissões</div>
+                        <div class="form-group"><label>Nome do Grupo</label><input type="text" id="nomeNovoGrupo" placeholder="Ex: Gestores de Unidade"></div>
+                        <div class="form-group">
+                            <label>Selecione as Permissões de Acesso:</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 8px; background: var(--surface-elevated); padding: 12px; border-radius: 6px;">
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Painel Geral" class="checkPerm"> Painel Geral</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Gestão de Lojas" class="checkPerm"> Gestão de Lojas</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Cadastro de Produtos" class="checkPerm"> Cadastro de Produtos</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Estoque por Loja" class="checkPerm"> Estoque</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Funcionários & Cautelas" class="checkPerm"> Funcionários & Cautelas</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Movimentações" class="checkPerm"> Movimentações</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Relatórios RH" class="checkPerm"> Relatórios RH</label>
+                                <label style="font-size: 11px; display: flex; align-items: center; gap: 8px; color: #FFF;"><input type="checkbox" value="Gestão de Utilizadores" class="checkPerm"> Gestão de Utilizadores</label>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="criarGrupoPermissao()" style="margin-top: 10px;">Registar Grupo</button>
+                    </div>
+
+                    <div class="card-modular">
+                        <div class="card-headline">Grupos Existentes</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>Nome do Grupo</th><th>Permissões</th><th>Ações</th></tr></thead>
+                                <tbody id="tabelaGruposBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SEÇÃO 5: ESTOQUE POR LOJA -->
+            <div id="estoqueLoja" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Monitoramento de Estoque & Mapa de Calor</div>
+                    <p style="color: var(--text-secondary); font-size: 12px;">Análise de rupturas e níveis críticos em tempo real.</p>
+                </div>
+                <div class="card-modular">
+                    <div class="card-headline">Saldos Consolidados por Unidade</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Loja</th><th>Produto</th><th>Quantidade</th><th>Status</th></tr></thead>
+                            <tbody id="tabelaEstoqueGeral"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 6: FUNCIONÁRIOS E CAUTELAS -->
+            <div id="funcionarios" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Registar Colaborador</div>
+                    <div class="form-inline">
+                        <div class="form-group"><label>Matrícula</label><input type="text" id="funcMatricula" placeholder="Ex: 1050"></div>
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="funcNome" placeholder="Ex: Carlos Silva"></div>
+                        <div class="form-group"><label>Cargo</label><input type="text" id="funcCargo" placeholder="Ex: Almoxarife"></div>
+                        <div class="form-group"><label>Loja</label><select id="funcLojaSelect" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Setor</label><input type="text" id="funcSetor" placeholder="Ex: Cozinha"></div>
+                        <div class="form-group"><button class="btn" onclick="adicionarFuncionario()">Registar Funcionário</button></div>
+                    </div>
+                </div>
+
+                <div class="card-modular">
+                    <div class="card-headline">Registar Cautela / Uniforme</div>
+                    <div class="form-inline">
+                        <div class="form-group"><label>Colaborador</label><select id="cautelaFuncSelect" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Item do Catálogo</label><select id="cautelaProdSelect" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Quantidade</label><input type="number" id="cautelaQtd" value="1" min="1"></div>
+                        <div class="form-group"><button class="btn" onclick="registarCautela()">Entregar Item</button></div>
+                    </div>
+                </div>
+
+                <div class="card-modular">
+                    <div class="card-headline">Colaboradores e Histórico de Cautelas</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Matrícula</th><th>Nome</th><th>Cargo</th><th>Unidade / Setor</th><th>Itens em Cautela</th></tr></thead>
+                            <tbody id="tabelaFuncionariosBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 7: MOVIMENTAÇÕES E TRANSFERÊNCIAS -->
+            <div id="movimentacoes" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Registar Movimentação Logística</div>
+                    <div class="form-inline">
+                        <div class="form-group"><label>Origem (Unidade Remetente)</label><select id="transOrigem" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Destino</label><select id="transDestino" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Produto</label><select id="transProdutoSelect" class="select-loja" style="max-width:100%"></select></div>
+                        <div class="form-group"><label>Quantidade</label><input type="number" id="transQtd" placeholder="Ex: 5" min="1"></div>
+                        <div class="form-group">
+                            <label>Motivo</label>
+                            <select id="transMotivo" class="select-loja" style="max-width:100%">
+                                <option value="Transferência entre Lojas">Transferência entre Lojas</option>
+                                <option value="Recebimento de Mercadoria">Recebimento de Mercadoria</option>
+                                <option value="Inventário de Sobra">Inventário de Sobra</option>
+                                <option value="Inventário de Falta">Inventário de Falta</option>
+                                <option value="Entrega a Funcionário">Entrega a Funcionário</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><button class="btn" onclick="registarTransferencia()">Registar Movimentação</button></div>
+                    </div>
+                </div>
+                <div class="card-modular">
+                    <div class="card-headline">Gestão de Transferências & Aprovações</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID</th><th>Origem</th><th>Destino</th><th>Produto</th><th>Qtd</th><th>Motivo</th><th>Status</th><th>Ação</th></tr></thead>
+                            <tbody id="tabelaTransferenciasBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 8: RELATÓRIOS E INDICADORES PARA O RH -->
+            <div id="relatoriosRH" class="secao-conteudo">
+                <div class="card-modular">
+                    <div class="card-headline">Auditoria de Consumo por Setor e Cargo</div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label>Filtrar por Setor</label>
+                            <select id="filtroSetorRelatorio" class="select-loja" style="max-width:100%" onchange="atualizarRelatorios()">
+                                <option value="">Todos os Setores</option>
+                                <option value="Cozinha">Cozinha</option>
+                                <option value="Limpeza">Limpeza</option>
+                                <option value="Atendimento">Atendimento</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Filtrar por Cargo</label>
+                            <select id="filtroCargoRelatorio" class="select-loja" style="max-width:100%" onchange="atualizarRelatorios()">
+                                <option value="">Todos os Cargos</option>
+                                <option value="Atendente">Atendente</option>
+                                <option value="Auxiliar">Auxiliar</option>
+                                <option value="Almoxarife">Almoxarife</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Colaborador</th><th>Matrícula</th><th>Cargo</th><th>Loja</th><th>Setor</th><th>Itens em Cautela</th></tr></thead>
+                            <tbody id="tabelaRelatorioFuncionarios"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
     <script>
-        // Função simples para simular ou buscar as lojas cadastradas na API
-        async function carregarLojas() {
+        let lojasRede = [
+            { codigo: 'L01', nome: 'REALENGO' },
+            { codigo: 'L02', nome: 'TAQUARA' },
+            { codigo: 'L04', nome: 'ANGRA' },
+            { codigo: 'L05', nome: 'SAOJOAO' },
+            { codigo: 'L06', nome: 'INHAUMA' },
+            { codigo: 'L07', nome: 'NITEROI' },
+            { codigo: 'L08', nome: 'TERESOPOLIS' },
+            { codigo: 'L09', nome: 'CAXIAS' },
+            { codigo: 'L10', nome: 'MACAE' },
+            { codigo: 'L11', nome: 'ARARUAMA' },
+            { codigo: 'L12', nome: 'ANGRA2' },
+            { codigo: 'L13', nome: 'SAOPEDRO' },
+            { codigo: 'L14', nome: 'CGRANDE' },
+            { codigo: 'L15', nome: 'CAMPOS' },
+            { codigo: 'L16', nome: 'RESENDE' },
+            { codigo: 'L17', nome: 'CAXIAS 2' },
+            { codigo: 'L18', nome: 'MARICA' },
+            { codigo: 'L20', nome: 'ITAPERUNA' },
+            { codigo: 'L21', nome: 'CAMPOS 2' },
+            { codigo: 'L23', nome: 'B.ROXO' },
+            { codigo: 'L24', nome: 'MESQUITA' },
+            { codigo: 'L26', nome: 'BANGU' },
+            { codigo: 'L27', nome: 'SAO GONCALO' },
+            { codigo: 'L29', nome: 'NOVAIGUACU' },
+            { codigo: 'L30', nome: 'PETROPOLIS' },
+            { codigo: 'L31', nome: 'BUZIOS' }
+        ];
+
+        let produtosRede = [
+            { codigo: 'PROD-CAM-P', descricao: 'Camisa Polo P', categoria: 'UNIFORME' },
+            { codigo: 'PROD-CAM-M', descricao: 'Camisa Polo M', categoria: 'UNIFORME' },
+            { codigo: 'PROD-LUVA', descricao: 'Luva Descartável (Caixa)', categoria: 'INSUMO' }
+        ];
+
+        let funcionariosRede = [
+            { matricula: '1001', nome: 'Maria Souza', cargo: 'Atendente', loja: 'L01', setor: 'Cozinha' },
+            { matricula: '1002', nome: 'João Lima', cargo: 'Auxiliar', loja: 'L02', setor: 'Limpeza' },
+            { matricula: '1003', nome: 'Carlos Marica', cargo: 'Atendente', loja: 'L18', setor: 'Atendimento' }
+        ];
+
+        let estoqueRede = [
+            { lojaCodigo: 'L01', produto: 'Camisa Polo P', qtd: 45 },
+            { lojaCodigo: 'L01', produto: 'Luva Descartável', qtd: 12 },
+            { lojaCodigo: 'L02', produto: 'Camisa Polo P', qtd: 5 },
+            { lojaCodigo: 'L04', produto: 'Camisa Polo P', qtd: 25 },
+            { lojaCodigo: 'L18', produto: 'Camisa Polo P', qtd: 30 },
+            { lojaCodigo: 'L26', produto: 'Camisa Polo P', qtd: 60 }
+        ];
+
+        let transferenciasRede = [
+            { id: 1, origem: 'L01', destino: 'L02', produto: 'Camisa Polo P', qtd: 5, motivo: 'Transferência entre Lojas', status: 'PENDENTE' }
+        ];
+
+        let cautelasRede = [
+            { matricula: '1001', item: 'Camisa Polo P (1 un)', data: '01/11/2026' }
+        ];
+
+        let gruposPermissao = JSON.parse(localStorage.getItem('gruposPermissao')) || [
+            { id: 'master', nome: 'Administrador Master', permissoes: ['Painel Geral', 'Gestão de Lojas', 'Cadastro de Produtos', 'Estoque por Loja', 'Funcionários & Cautelas', 'Movimentações', 'Relatórios RH', 'Gestão de Utilizadores'] },
+            { id: 'loja', nome: 'Gerente de Loja Padrão', permissoes: ['Painel Geral', 'Estoque por Loja', 'Funcionários & Cautelas', 'Movimentações'] }
+        ];
+
+        let utilizadoresRede = JSON.parse(localStorage.getItem('utilizadoresRede')) || [
+            { login: 'gerente.central', senha: '123456', loja: 'SEM LOJA', grupo: 'Administrador Master' },
+            { login: 'loja.realengo', senha: '123456', loja: 'L01 - REALENGO', grupo: 'Gerente de Loja Padrão' }
+        ];
+
+        let usuarioLogado = localStorage.getItem('usuarioLogado') || 'gerente.central';
+
+        function toggleMenuMobile() {
+            const aside = document.getElementById('asideMenu');
+            const overlay = document.getElementById('sidebarOverlay');
+            aside.classList.toggle('mobile-aberto');
+            overlay.classList.toggle('ativo');
+        }
+
+        function tocarSomClique(tipo = 'normal') {
             try {
-                const resposta = await fetch('/api/lojas');
-                const lojas = await resposta.json();
-                
-                const select = document.getElementById('lojaSelect');
-                const tbody = document.getElementById('tabelaLojasBody');
-                
-                select.innerHTML = '';
-                tbody.innerHTML = '';
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
 
-                lojas.forEach(loja => {
-                    // Preencher o select do cabeçalho
-                    const opt = document.createElement('option');
-                    opt.value = loja.id;
-                    opt.textContent = `${loja.codigo} - ${loja.nome}`;
-                    select.appendChild(opt);
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
 
-                    // Preencher a tabela
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td><strong>${loja.codigo}</strong></td><td>${loja.nome}</td>`;
-                    tbody.appendChild(tr);
-                });
-            } catch (err) {
-                console.log('Modo offline / API local aguardando servidor.');
-                document.getElementById('tabelaLojasBody').innerHTML = `
-                    <tr><td>L01</td><td>REALENGO</td></tr>
-                    <tr><td>L02</td><td>TAQUARA</td></tr>
-                    <tr><td>L04</td><td>ANGRA</td></tr>
-                `;
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                if (tipo === 'sucesso') {
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08);
+                    gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.06);
+                }
+            } catch (e) {}
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'LI') {
+                tocarSomClique('normal');
+            }
+        });
+
+        const alertaOriginal = window.alert;
+        window.alert = function(msg) {
+            if (msg.includes('sucesso') || msg.includes('sucesso!')) {
+                tocarSomClique('sucesso');
+            }
+            alertaOriginal(msg);
+        };
+
+        function mudarSecao(idSecao, elementoMenu) {
+            const secoes = document.querySelectorAll('.secao-conteudo');
+            secoes.forEach(sec => sec.classList.remove('ativa'));
+            const alvo = document.getElementById(idSecao);
+            if (alvo) alvo.classList.add('ativa');
+            const itensMenu = document.querySelectorAll('.sidebar-menu li');
+            itensMenu.forEach(li => li.classList.remove('active'));
+            if (elementoMenu) elementoMenu.classList.add('active');
+
+            const tituloTopo = document.getElementById('tituloTopo');
+            if (tituloTopo && elementoMenu) {
+                tituloTopo.textContent = elementoMenu.textContent.replace('›', '').trim();
+            }
+
+            if (window.innerWidth < 768) {
+                toggleMenuMobile();
             }
         }
 
-        carregarLojas();
+        function aplicarPermissoesPerfil() {
+            const selectTopo = document.getElementById('lojaSelect');
+            const menuLojas = document.getElementById('menuGestaoLojas');
+            const menuProdutos = document.getElementById('menuProdutos');
+            const menuUsuarios = document.getElementById('menuUsuarios');
+            const sidebarUserName = document.getElementById('sidebarUserName');
+            const infoLoja = document.getElementById('infoLojaAtiva');
+            const textoBoasVindas = document.getElementById('textoBoasVindas');
+
+            if (sidebarUserName) {
+                sidebarUserName.textContent = usuarioLogado === 'gerente.central' ? 'Isac da Silva' : usuarioLogado.toUpperCase();
+            }
+
+            let userObj = utilizadoresRede.find(u => u.login.toLowerCase() === usuarioLogado.toLowerCase());
+            let grupoNome = userObj ? userObj.grupo : 'Gerente de Loja Padrão';
+            let grupoObj = gruposPermissao.find(g => g.nome === grupoNome);
+
+            if (usuarioLogado === 'gerente.central' || (grupoObj && grupoObj.nome === 'Administrador Master')) {
+                infoLoja.textContent = 'Visão Global de Toda a Rede (26 Lojas) - Acesso Master';
+                textoBoasVindas.textContent = 'Tecnologia e gestão a serviço de um RH mais eficiente e integrado.';
+                if (selectTopo) selectTopo.disabled = false;
+                if (menuLojas) menuLojas.style.display = 'flex';
+                if (menuProdutos) menuProdutos.style.display = 'flex';
+                if (menuUsuarios) menuUsuarios.style.display = 'flex';
+            } else {
+                infoLoja.textContent = `A gerir exclusivamente a unidade associada ao login: ${usuarioLogado} (${userObj ? userObj.loja : 'Unidade'})`;
+                textoBoasVindas.textContent = 'Gestão dedicada de stock e suprimentos da sua unidade.';
+                if (selectTopo) {
+                    let codigoLojaLimp = userObj && userObj.loja !== 'SEM LOJA' ? userObj.loja.split(' - ')[0] : 'L01';
+                    selectTopo.value = codigoLojaLimp;
+                    selectTopo.disabled = true;
+                }
+                if (menuLojas) menuLojas.style.display = 'none';
+                if (menuProdutos) menuProdutos.style.display = 'none';
+                if (menuUsuarios) menuUsuarios.style.display = 'none';
+            }
+        }
+        function alternarAbaUsuario(aba) {
+            const secUsers = document.getElementById('subSecaoUsers');
+            const secGrupos = document.getElementById('subSecaoGrupos');
+            const btnUsers = document.getElementById('abaBtnUsers');
+            const btnGrupos = document.getElementById('abaBtnGrupos');
+
+            if (aba === 'users') {
+                secUsers.style.display = 'block';
+                secGrupos.style.display = 'none';
+                btnUsers.style.background = 'var(--tech-blue)';
+                btnUsers.style.color = 'white';
+                btnGrupos.style.background = 'var(--surface-elevated)';
+                btnGrupos.style.color = 'var(--tech-cyan)';
+            } else {
+                secUsers.style.display = 'none';
+                secGrupos.style.display = 'block';
+                btnGrupos.style.background = 'var(--tech-blue)';
+                btnGrupos.style.color = 'white';
+                btnUsers.style.background = 'var(--surface-elevated)';
+                btnUsers.style.color = 'var(--tech-cyan)';
+            }
+        }
+
+        function carregarSelectsUtilizadores() {
+            const selectLojaUser = document.getElementById('novoUserLoja');
+            const selectGrupoUser = document.getElementById('novoUserGrupo');
+
+            if (selectLojaUser) {
+                selectLojaUser.innerHTML = `<option value="SEM LOJA">SEM LOJA (Acesso Global / Escritório)</option>`;
+                lojasRede.forEach(l => {
+                    selectLojaUser.innerHTML += `<option value="${l.codigo} - ${l.nome}">${l.codigo} - ${l.nome}</option>`;
+                });
+            }
+
+            if (selectGrupoUser) {
+                selectGrupoUser.innerHTML = '';
+                gruposPermissao.forEach(g => {
+                    selectGrupoUser.innerHTML += `<option value="${g.nome}">${g.nome}</option>`;
+                });
+            }
+        }
+
+        function criarUtilizador() {
+            const login = document.getElementById('novoUserLogin').value.trim().toLowerCase();
+            const senha = document.getElementById('novoUserSenha').value.trim();
+            const loja = document.getElementById('novoUserLoja').value;
+            const grupo = document.getElementById('novoUserGrupo').value;
+
+            if (!login || !senha) { alert('Preencha o login e a senha.'); return; }
+            if (utilizadoresRede.some(u => u.login === login)) { alert('Este login já existe.'); return; }
+
+            utilizadoresRede.push({ login, senha, loja, grupo });
+            localStorage.setItem('utilizadoresRede', JSON.stringify(utilizadoresRede));
+
+            document.getElementById('novoUserLogin').value = '';
+            document.getElementById('novoUserSenha').value = '';
+            inicializarSistema();
+            alert('Utilizador criado com sucesso!');
+        }
+
+        function criarGrupoPermissao() {
+            const nome = document.getElementById('nomeNovoGrupo').value.trim();
+            const checkboxes = document.querySelectorAll('.checkPerm:checked');
+            let permissoes = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!nome) { alert('Digite o nome do grupo.'); return; }
+            gruposPermissao.push({ id: 'g_' + Date.now(), nome, permissoes });
+            localStorage.setItem('gruposPermissao', JSON.stringify(gruposPermissao));
+
+            document.getElementById('nomeNovoGrupo').value = '';
+            checkboxes.forEach(cb => cb.checked = false);
+            inicializarSistema();
+            alert('Grupo criado com sucesso!');
+        }
+
+        function filtrarUtilizadores() {
+            const termo = document.getElementById('inputPesquisaUser').value.trim().toLowerCase();
+            const tbUsers = document.getElementById('tabelaUsuariosBody');
+            let filtrados = utilizadoresRede.filter(u => u.login.toLowerCase().includes(termo) || u.grupo.toLowerCase().includes(termo) || u.loja.toLowerCase().includes(termo));
+            
+            if (filtrados.length === 0) {
+                tbUsers.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">Nenhum utilizador encontrado.</td></tr>`;
+                return;
+            }
+
+            tbUsers.innerHTML = filtrados.map((u) => {
+                let realIndex = utilizadoresRede.findIndex(orig => orig.login === u.login);
+                return `
+                    <tr>
+                        <td><strong>${u.login}</strong></td>
+                        <td>${u.loja}</td>
+                        <td><span class="badge-alto">${u.grupo}</span></td>
+                        <td>
+                            <button class="btn-acao" onclick="alterarSenhaUtilizador(${realIndex})">Senha</button>
+                            ${u.login !== 'gerente.central' ? `<button class="btn-perigo" onclick="removerUtilizador(${realIndex})">Remover</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function alterarSenhaUtilizador(index) {
+            const novaSenha = prompt(`Nova senha para "${utilizadoresRede[index].login}":`);
+            if (novaSenha && novaSenha.trim() !== '') {
+                utilizadoresRede[index].senha = novaSenha.trim();
+                localStorage.setItem('utilizadoresRede', JSON.stringify(utilizadoresRede));
+                alert('Senha alterada com sucesso!');
+                inicializarSistema();
+            }
+        }
+
+        function removerUtilizador(index) {
+            if (confirm(`Remover acesso de "${utilizadoresRede[index].login}"?`)) {
+                utilizadoresRede.splice(index, 1);
+                localStorage.setItem('utilizadoresRede', JSON.stringify(utilizadoresRede));
+                alert('Utilizador removido com sucesso!');
+                inicializarSistema();
+            }
+        }
+
+        function removerGrupo(index) {
+            if (confirm(`Remover grupo?`)) {
+                gruposPermissao.splice(index, 1);
+                localStorage.setItem('gruposPermissao', JSON.stringify(gruposPermissao));
+                alert('Grupo removido com sucesso!');
+                inicializarSistema();
+            }
+        }
+
+        function inicializarSistema(filtroLoja = '') {
+            aplicarPermissoesPerfil();
+            const selectTopo = document.getElementById('lojaSelect');
+            const selectFunc = document.getElementById('funcLojaSelect');
+            const selectOrigem = document.getElementById('transOrigem');
+            const selectDestino = document.getElementById('transDestino');
+            const selectProd = document.getElementById('transProdutoSelect');
+            
+            if (selectTopo && selectTopo.children.length <= 1 && usuarioLogado === 'gerente.central') {
+                lojasRede.forEach(l => {
+                    selectTopo.innerHTML += `<option value="${l.codigo}">${l.codigo} - ${l.nome}</option>`;
+                });
+            }
+
+            if (selectOrigem) {
+                selectOrigem.innerHTML = '';
+                if (usuarioLogado === 'gerente.central') {
+                    selectOrigem.disabled = false;
+                    lojasRede.forEach(l => {
+                        selectOrigem.innerHTML += `<option value="${l.codigo}">${l.codigo} - ${l.nome}</option>`;
+                    });
+                } else {
+                    let userObj = utilizadoresRede.find(u => u.login.toLowerCase() === usuarioLogado.toLowerCase());
+                    let codigoLojaUser = userObj && userObj.loja !== 'SEM LOJA' ? userObj.loja.split(' - ')[0] : 'L01';
+                    let nomeLojaUser = userObj ? userObj.loja : 'Unidade';
+                    selectOrigem.innerHTML = `<option value="${codigoLojaUser}">${codigoLojaUser} - ${nomeLojaUser} (Sua Unidade)</option>`;
+                    selectOrigem.disabled = true;
+                }
+            }
+
+            [selectFunc, selectDestino].forEach(sel => {
+                if (sel && sel.children.length <= 1) {
+                    sel.innerHTML = '';
+                    lojasRede.forEach(l => {
+                        sel.innerHTML += `<option value="${l.codigo}">${l.codigo} - ${l.nome}</option>`;
+                    });
+                }
+            });
+
+            if (selectProd) {
+                selectProd.innerHTML = '';
+                produtosRede.forEach(p => {
+                    selectProd.innerHTML += `<option value="${p.descricao}">${p.codigo} - ${p.descricao}</option>`;
+                });
+            }
+
+            carregarSelectsUtilizadores();
+
+            let lojaFiltroAtual = filtroLoja || (selectTopo ? selectTopo.value : '');
+
+            const tbLojas = document.getElementById('tabelaLojasBody');
+            if (tbLojas && usuarioLogado === 'gerente.central') {
+                tbLojas.innerHTML = lojasRede.map(l => `
+                    <tr>
+                        <td><strong>${l.codigo}</strong></td>
+                        <td>${l.nome}</td>
+                        <td><code>loja.${l.nome.toLowerCase().replace(/\s+/g, '')}</code></td>
+                    </tr>
+                `).join('');
+            }
+
+            const tbProd = document.getElementById('tabelaProdutosBody');
+            if (tbProd) {
+                tbProd.innerHTML = produtosRede.map(p => `<tr><td><strong>${p.codigo}</strong></td><td>${p.descricao}</td><td>${p.categoria}</td></tr>`).join('');
+            }
+
+            const tbUsers = document.getElementById('tabelaUsuariosBody');
+            if (tbUsers) {
+                tbUsers.innerHTML = utilizadoresRede.map((u, index) => `
+                    <tr>
+                        <td><strong>${u.login}</strong></td>
+                        <td>${u.loja}</td>
+                        <td><span class="badge-alto">${u.grupo}</span></td>
+                        <td>
+                            <button class="btn-acao" onclick="alterarSenhaUtilizador(${index})">Senha</button>
+                            ${u.login !== 'gerente.central' ? `<button class="btn-perigo" onclick="removerUtilizador(${index})">Remover</button>` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const tbGrupos = document.getElementById('tabelaGruposBody');
+            if (tbGrupos) {
+                tbGrupos.innerHTML = gruposPermissao.map((g, index) => `
+                    <tr>
+                        <td><strong>${g.nome}</strong></td>
+                        <td><span style="font-size: 11px; color: var(--tech-cyan);">${g.permissoes.join(', ')}</span></td>
+                        <td>
+                            ${g.id !== 'master' && g.id !== 'loja' ? `<button class="btn-perigo" onclick="removerGrupo(${index})">Remover</button>` : '<span style="color:var(--text-secondary); font-size:11px;">Padrão</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            inicializarCautelasEFuncionarios();
+            atualizarRelatorios();
+
+            const tbodyEstoque = document.getElementById('tabelaEstoqueGeral');
+            if (tbodyEstoque) {
+                let dadosEstoque = lojaFiltroAtual ? estoqueRede.filter(e => e.lojaCodigo === lojaFiltroAtual) : estoqueRede;
+                if (dadosEstoque.length === 0) {
+                    tbodyEstoque.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">Sem registos de estoque para esta unidade.</td></tr>`;
+                } else {
+                    tbodyEstoque.innerHTML = dadosEstoque.map(item => {
+                        let badge = item.qtd <= 5 ? 'badge-baixo' : (item.qtd <= 15 ? 'badge-medio' : 'badge-alto');
+                        let texto = item.qtd <= 5 ? 'Crítico / Ruptura' : (item.qtd <= 15 ? 'Atenção' : 'Estoque Adequado');
+                        return `<tr><td><strong>${item.lojaCodigo}</strong></td><td>${item.produto}</td><td><strong>${item.qtd} un</strong></td><td><span class="${badge}">${texto}</span></td></tr>`;
+                    }).join('');
+                }
+            }
+
+            const tbTrans = document.getElementById('tabelaTransferenciasBody');
+            if (tbTrans) {
+                if (transferenciasRede.length === 0) {
+                    tbTrans.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-secondary);">Sem movimentações registadas.</td></tr>`;
+                } else {
+                    tbTrans.innerHTML = transferenciasRede.map(t => {
+                        let statusBadge = t.status === 'PENDENTE' ? '<span class="badge-pendente">PENDENTE</span>' : '<span class="badge-aceite">ACEITE</span>';
+                        let acaoBtn = t.status === 'PENDENTE' ? `<button class="btn-acao" onclick="aceitarTransferencia(${t.id})">Aceitar</button>` : '<span style="color:var(--text-secondary);">Concluído</span>';
+                        return `<tr>
+                            <td>#${t.id}</td>
+                            <td><strong>${t.origem}</strong></td>
+                            <td><strong>${t.destino}</strong></td>
+                            <td>${t.produto}</td>
+                            <td><strong>${t.qtd} un</strong></td>
+                            <td>${t.motivo}</td>
+                            <td>${statusBadge}</td>
+                            <td>${acaoBtn}</td>
+                        </tr>`;
+                    }).join('');
+                }
+            }
+        }
+        function inicializarCautelasEFuncionarios() {
+            const selectFuncCautela = document.getElementById('cautelaFuncSelect');
+            const selectProdCautela = document.getElementById('cautelaProdSelect');
+
+            if (selectFuncCautela) {
+                selectFuncCautela.innerHTML = '';
+                funcionariosRede.forEach(f => {
+                    selectFuncCautela.innerHTML += `<option value="${f.matricula}">${f.matricula} - ${f.nome} (${f.cargo})</option>`;
+                });
+            }
+
+            if (selectProdCautela) {
+                selectProdCautela.innerHTML = '';
+                produtosRede.filter(p => p.categoria === 'UNIFORME').forEach(p => {
+                    selectProdCautela.innerHTML += `<option value="${p.descricao}">${p.descricao}</option>`;
+                });
+            }
+
+            const tbFunc = document.getElementById('tabelaFuncionariosBody');
+            if (tbFunc) {
+                tbFunc.innerHTML = funcionariosRede.map(f => {
+                    let entregasDoFunc = cautelasRede.filter(c => c.matricula === f.matricula);
+                    let historicoStr = entregasDoFunc.length > 0 
+                        ? entregasDoFunc.map(e => `• ${e.item} (${e.data})`).join('<br>') 
+                        : '<span style="color:var(--text-secondary);">Nenhum uniforme</span>';
+
+                    return `<tr>
+                        <td><strong>${f.matricula}</strong></td>
+                        <td>${f.nome}</td>
+                        <td>${f.cargo}</td>
+                        <td>${f.loja} / ${f.setor}</td>
+                        <td>${historicoStr}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function atualizarRelatorios() {
+            const kpiItens = document.getElementById('kpiTotalItensRede');
+            const kpiPend = document.getElementById('kpiPendentes');
+            const kpiCaut = document.getElementById('kpiCautelas');
+            const lojaSelecionadaTopo = document.getElementById('lojaSelect')?.value || '';
+            
+            let somaTotalItens = estoqueRede
+                .filter(item => !lojaSelecionadaTopo || item.lojaCodigo === lojaSelecionadaTopo)
+                .reduce((acc, item) => acc + parseInt(item.qtd || 0), 0);
+
+            if (kpiItens) kpiItens.textContent = somaTotalItens;
+            if (kpiPend) kpiPend.textContent = transferenciasRede.filter(t => t.status === 'PENDENTE').length;
+            if (kpiCaut) kpiCaut.textContent = cautelasRede.length;
+
+            const setorFiltro = document.getElementById('filtroSetorRelatorio')?.value || '';
+            const cargoFiltro = document.getElementById('filtroCargoRelatorio')?.value || '';
+            const tbRelatorio = document.getElementById('tabelaRelatorioFuncionarios');
+
+            if (tbRelatorio) {
+                let funcFiltrados = funcionariosRede.filter(f => {
+                    let matchLoja = lojaSelecionadaTopo ? f.loja.includes(lojaSelecionadaTopo) : true;
+                    let matchSetor = setorFiltro ? f.setor.toLowerCase() === setorFiltro.toLowerCase() : true;
+                    let matchCargo = cargoFiltro ? f.cargo.toLowerCase() === cargoFiltro.toLowerCase() : true;
+                    return matchLoja && matchSetor && matchCargo;
+                });
+
+                if (funcFiltrados.length === 0) {
+                    tbRelatorio.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-secondary);">Nenhum colaborador encontrado.</td></tr>`;
+                    return;
+                }
+
+                tbRelatorio.innerHTML = funcFiltrados.map(f => {
+                    let cautelasDoFunc = cautelasRede.filter(c => c.matricula === f.matricula);
+                    let itensStr = cautelasDoFunc.length > 0 ? cautelasDoFunc.map(c => c.item).join(', ') : 'Nenhum';
+
+                    return `<tr>
+                        <td><strong>${f.nome}</strong></td>
+                        <td>${f.matricula}</td>
+                        <td>${f.cargo}</td>
+                        <td>${f.loja}</td>
+                        <td>${f.setor}</td>
+                        <td><span style="color: var(--tech-cyan); font-weight: bold;">${itensStr}</span></td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function adicionarLoja() {
+            if (usuarioLogado !== 'gerente.central') { alert('Acesso negado.'); return; }
+            const codigo = document.getElementById('novaLojaCodigo').value.trim().toUpperCase();
+            const nome = document.getElementById('novaLojaNome').value.trim().toUpperCase();
+            if (!codigo || !nome) { alert('Preencha os campos.'); return; }
+            lojasRede.push({ codigo, nome });
+            inicializarSistema();
+            document.getElementById('novaLojaCodigo').value = '';
+            document.getElementById('novaLojaNome').value = '';
+            alert('Loja cadastrada com sucesso!');
+        }
+
+        function adicionarProduto() {
+            if (usuarioLogado !== 'gerente.central') { alert('Acesso restrito.'); return; }
+            const codigo = document.getElementById('novoProdCodigo').value.trim().toUpperCase();
+            const descricao = document.getElementById('novoProdDesc').value.trim();
+            const categoria = document.getElementById('novoProdCat').value;
+            if (!codigo || !descricao) { alert('Preencha os campos.'); return; }
+            produtosRede.push({ codigo, descricao, categoria });
+            inicializarSistema();
+            document.getElementById('novoProdCodigo').value = '';
+            document.getElementById('novoProdDesc').value = '';
+            alert('Produto cadastrado com sucesso!');
+        }
+
+        function adicionarFuncionario() {
+            const matricula = document.getElementById('funcMatricula').value.trim();
+            const nome = document.getElementById('funcNome').value.trim();
+            const cargo = document.getElementById('funcCargo').value.trim();
+            const loja = document.getElementById('funcLojaSelect').value;
+            const setor = document.getElementById('funcSetor').value.trim();
+            if (!matricula || !nome || !cargo || !setor) { alert('Preencha todos os campos.'); return; }
+            funcionariosRede.push({ matricula, nome, cargo, loja, setor });
+            inicializarSistema();
+            document.getElementById('funcMatricula').value = '';
+            document.getElementById('funcNome').value = '';
+            document.getElementById('funcCargo').value = '';
+            document.getElementById('funcSetor').value = '';
+            alert('Funcionário registado com sucesso!');
+        }
+
+        function registarCautela() {
+            const matricula = document.getElementById('cautelaFuncSelect').value;
+            const produto = document.getElementById('cautelaProdSelect').value;
+            const qtd = document.getElementById('cautelaQtd').value;
+            if (!matricula || !produto) { alert('Selecione o colaborador e o item.'); return; }
+
+            const dataAtual = new Date().toLocaleDateString('pt-BR');
+            cautelasRede.push({ matricula: matricula, item: `${produto} (${qtd} un)`, data: dataAtual });
+            inicializarSistema();
+            alert('Cautela registada com sucesso!');
+        }
+
+        function registarTransferencia() {
+            let origem = document.getElementById('transOrigem').value;
+            if (usuarioLogado !== 'gerente.central') {
+                let userObj = utilizadoresRede.find(u => u.login.toLowerCase() === usuarioLogado.toLowerCase());
+                if (userObj && userObj.loja !== 'SEM LOJA') { origem = userObj.loja.split(' - ')[0]; }
+            }
+
+            const destino = document.getElementById('transDestino').value;
+            const produto = document.getElementById('transProdutoSelect').value;
+            const qtd = parseInt(document.getElementById('transQtd').value);
+            const motivo = document.getElementById('transMotivo').value;
+
+            if (origem === destino) { alert('Origem e destino iguais.'); return; }
+            if (!qtd || qtd <= 0) { alert('Insira uma quantidade válida.'); return; }
+
+            transferenciasRede.push({
+                id: transferenciasRede.length + 1,
+                origem, destino, produto, qtd, motivo,
+                status: (motivo === 'Transferência entre Lojas') ? 'PENDENTE' : 'ACEITE'
+            });
+
+            inicializarSistema();
+            document.getElementById('transQtd').value = '';
+            alert('Movimentação registada com sucesso!');
+        }
+
+        function aceitarTransferencia(id) {
+            const trans = transferenciasRede.find(t => t.id === id);
+            if (trans && trans.status === 'PENDENTE') {
+                trans.status = 'ACEITE';
+                inicializarSistema();
+                alert(`Transferência #${id} aceite com sucesso!`);
+            }
+        }
+
+        function atualizarLojaSelecionada(selectElement) {
+            if (usuarioLogado !== 'gerente.central') return;
+            const valor = selectElement.value;
+            const badge = document.getElementById('infoLojaAtiva');
+            if (valor) {
+                badge.textContent = `A exibir dados da Loja: ${valor}`;
+                inicializarSistema(valor);
+            } else {
+                badge.textContent = 'A exibir dados consolidados de toda a rede';
+                inicializarSistema('');
+            }
+        }
+
+        function sairDoSistema() {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        }
+
+        window.onload = function() {
+            inicializarSistema();
+        };
     </script>
 </body>
 </html>

@@ -3,71 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Almoxarifado - Login Mestre</title>
+    <title>RH CENTRAL - Login</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .login-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .login-card h2 { margin-bottom: 20px; color: #333; text-align: center; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
-        .btn-login { width: 100%; padding: 12px; background-color: #007bff; border: none; border-radius: 4px; color: white; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .btn-login:hover { background-color: #0056b3; }
-        .erro-msg { color: red; font-size: 14px; margin-top: 10px; text-align: center; display: none; }
+        :root {
+            --bg-main: #080E1B;
+            --bg-secondary: #0D1728;
+            --card-bg: #111D30;
+            --surface-elevated: #192A40;
+            --tech-blue: #00BFFF;
+            --tech-cyan: #00E5FF;
+            --text-main: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --positive-green: #36D399;
+            --danger-red: #F87171;
+            --border-color: #1E293B;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 35px 30px;
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            backdrop-filter: blur(12px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .login-brand h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+        .login-brand span {
+            font-size: 11px;
+            color: var(--tech-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--tech-cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, var(--tech-blue), #0077b6);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            background: linear-gradient(135deg, var(--tech-cyan), var(--tech-blue));
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4);
+        }
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        /* Overlay de Carregamento Futurista */
+        #loadingOverlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(8, 14, 27, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            z-index: 10;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(0, 191, 255, 0.2);
+            border-top: 3px solid var(--tech-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: var(--tech-cyan);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <h2>Almoxarifado Rede</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="login">Usuário / Login</label>
-                <input type="text" id="login" required placeholder="Ex: admin">
-            </div>
-            <div class="form-group">
-                <label for="senha">Palavra-passe</label>
-                <input type="password" id="senha" required placeholder="Sua palavra-passe">
-            </div>
-            <button type="submit" class="btn-login">Entrar no Sistema</button>
-            <div id="erroMsg" class="erro-msg">Utilizador ou palavra-passe incorretos.</div>
-        </form>
+        <!-- Ecrã de Loading Oculto por padrão -->
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+            <div class="loading-text">AUTENTICANDO CREDENCIAIS...</div>
+        </div>
+
+        <div class="login-brand">
+            <h1>RH CENTRAL</h1>
+            <span>Intelligence System</span>
+        </div>
+
+        <div class="form-group">
+            <label for="inputUsuario">Utilizador</label>
+            <input type="text" id="inputUsuario" placeholder="Ex: loja.realengo ou gerente.central">
+        </div>
+
+        <div class="form-group">
+            <label for="inputSenha">Senha</label>
+            <input type="password" id="inputSenha" placeholder="••••••••">
+        </div>
+
+        <button class="btn-login" onclick="autenticarUsuario()">Aceder ao Sistema</button>
     </div>
 
+    <!-- PARTE QUE FALTAVA: LOGICA DE AUTENTICAÇÃO E SOM -->
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const loginInput = document.getElementById('login').value;
-            const senhaInput = document.getElementById('senha').value;
-            const erroMsg = document.getElementById('erroMsg');
-
+        function tocarSomSucesso() {
             try {
-                // Aqui fará a requisição para a nossa API na nuvem quando estiver online
-                const resposta = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ login: loginInput, senha: senhaInput })
-                });
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08);
+                osc.frequency.setValueAtTime(1174.66, audioCtx.currentTime + 0.16);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {}
+        }
 
-                const dados = await resposta.json();
+        function autenticarUsuario() {
+            const usuarioInput = document.getElementById('inputUsuario').value.trim().toLowerCase();
+            const senhaInput = document.getElementById('inputSenha').value.trim();
 
-                if (resposta.ok) {
-                    alert('Login efetuado com sucesso! Bem-vindo, ' + dados.usuario.nome);
-                    // Redirecionará para o painel principal nas próximas etapas
-                } else {
-                    erroMsg.style.display = 'block';
-                    erroMsg.innerText = dados.erro || 'Erro ao efetuar login.';
-                }
-            } catch (err) {
-                console.error(err);
-                // Para testes visuais iniciais locais no telemóvel:
-                if(loginInput === 'admin') {
-                    alert('Login Mestre simulado com sucesso!');
-                } else {
-                    erroMsg.style.display = 'block';
-                    erroMsg.innerText = 'Falha na conexão com o servidor.';
-                }
+            if (!usuarioInput || !senhaInput) {
+                alert('Por favor, preencha o utilizador e a senha.');
+                return;
+            }
+
+            // Lê os utilizadores registados no painel ou assume os padrões
+            let utilizadoresRede = JSON.parse(localStorage.getItem('utilizadoresRede')) || [
+                { login: 'gerente.central', senha: '123456', nivel: 'Central' },
+                { login: 'loja.realengo', senha: '123456', nivel: 'Loja' }
+            ];
+
+            let userEncontrado = utilizadoresRede.find(u => u.login.toLowerCase() === usuarioInput && u.senha === senhaInput);
+
+            if (userEncontrado) {
+                localStorage.setItem('usuarioLogado', userEncontrado.login);
+                tocarSomSucesso();
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                setTimeout(() => {
+                    window.location.href = 'painel.html';
+                }, 800);
+            } else {
+                alert('Utilizador ou senha incorretos!');
+            }
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                autenticarUsuario();
             }
         });
     </script>

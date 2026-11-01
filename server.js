@@ -1,66 +1,59 @@
 const express = require('express');
 const { Pool } = require('pg');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
-app.use(express.json());
+const port = process.env.PORT || 3000;
 
-// Permitir que o servidor sirva arquivos estáticos (HTML, CSS, etc.) da pasta atual
-app.use(express.static(__dirname));
-
-// Conexão com o PostgreSQL na nuvem (Neon.tech)
+// Configuração da Base de Dados Neon.tech
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-// Rota raiz: Abre automaticamente a tela de login
+// Middleware para processar JSON e permitir requisições (CORS manual seguro)
+app.use(express.json());
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// Rota de Teste do Servidor
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send('Servidor do Almoxarifado a funcionar corretamente!');
 });
 
-// Rota para abrir o painel principal
-app.get('/painel', (req, res) => {
-  res.sendFile(path.join(__dirname, 'painel.html'));
-});
-
-// 1. Rota para listar todas as 26 lojas cadastradas na base de dados
-app.get('/api/lojas', async (req, res) => {
-  try {
-    const resultado = await pool.query('SELECT * FROM lojas ORDER BY codigo ASC');
-    res.json(resultado.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro ao buscar lojas' });
+// Rota de Login (Ligada à tabela 'usuarios' com colunas 'login' e 'senha_hash')
+app.post('/login', async (req, res) => {
+  const { usuario, senha } = req.body;
+  
+  if (!usuario || !senha) {
+    return res.status(400).json({ sucesso: false, erro: "Preencha o utilizador e a palavra-passe." });
   }
-});
 
-// 2. Rota de Login do Administrador / Gestor
-app.post('/api/login', async (req, res) => {
-  const { login, senha } = req.body;
   try {
-    const resultado = await pool.query('SELECT * FROM usuarios WHERE login = $1 AND ativo = TRUE', [login]);
+    const result = await pool.query(
+      'SELECT * FROM usuarios WHERE login = $1 AND senha_hash = $2',
+      [usuario, senha]
+    );
     
-    if (resultado.rows.length === 0) {
-      return res.status(401).json({ erro: 'Utilizador não encontrado' });
+    if (result.rows.length > 0) {
+      res.json({ sucesso: true, mensagem: "Login bem-sucedido!" });
+    } else {
+      res.status(401).json({ sucesso: false, erro: "Utilizador ou palavra-passe incorretos." });
     }
-
-    const usuario = resultado.rows[0];
-
-    // Retorna sucesso e os dados básicos do gestor mestre
-    res.json({ 
-      mensagem: 'Login realizado com sucesso!',
-      usuario: { id: usuario.id, nome: usuario.nome, perfil: usuario.perfil }
-    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro interno no servidor' });
+    console.error('Erro no login:', err);
+    res.status(500).json({ sucesso: false, erro: "Erro interno no servidor." });
   }
 });
 
-// Iniciar o servidor na porta definida ou 3000
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// Iniciar o Servidor
+app.listen(port, () => {
+  console.log(`Servidor a rodar na porta ${port}`);
 });
+
