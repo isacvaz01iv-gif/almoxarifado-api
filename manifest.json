@@ -1,6 +1,7 @@
 {
-  "name": "Almoxarifado Central RH",
+  "name": "RH Central - Sistema de Almoxarifado",
   "short_name": "Almoxarifado",
+  "description": "Sistema de gestão de RH e almoxarifado para a rede de 26 lojas",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#060B14",
@@ -13,3 +14,4 @@
     }
   ]
 }
+
